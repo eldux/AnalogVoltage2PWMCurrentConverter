@@ -18,13 +18,12 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include <stdio.h>
-#include <stdarg.h>
-#include <stdint.h>
-#include <string.h>
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "stdio.h"
+#include "stdarg.h"
+#include "stdint.h"
+#include "string.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -153,13 +152,14 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  if (debug_on)
+	  {
+		  print("Input: %d mV, Output: %s, Req.cur: %d mA, Meas.cur.: %d mA, Set by: %s\r\n", input_voltage_mV, (output_on)? "on" : "off", required_current_mA, output_current_mA, (input_use)? "input req." : "user req.");
+	  }
     /* USER CODE END WHILE */
-	if (debug_on)
-	{
-		print("Input: %d mV, Output: %s, Req.cur: %d mA, Meas.cur.: %d mA, Set by: %s\r\n", input_voltage_mV, (output_on)? "on" : "off", required_current_mA, output_current_mA, (input_use)? "input req." : "user req.");
-		HAL_Delay(200);
-	}
+
     /* USER CODE BEGIN 3 */
+	  HAL_Delay(1000);
   }
   /* USER CODE END 3 */
 }
@@ -357,7 +357,7 @@ static void MX_TIM3_Init(void)
 
   /* USER CODE END TIM3_Init 1 */
   htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 64;
+  htim3.Init.Prescaler = 84;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim3.Init.Period = 1000;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -510,7 +510,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 		output_current_raw = (int16_t)(((float)output_current_acc)/8000.0f - offset);
 		if ((required_current_mA == 0)&&(pwm == 0))
 		{
-			offset += output_current_raw/10.0f;
+			offset += output_current_raw/20.0f;
 			if (offset < 0.0f)
 			{
 				offset = 0.0f;
@@ -518,7 +518,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 			else if (offset > 50.0f) offset = 50.0f;
 		}
 		if (output_current_raw < 0) output_current_raw = 0;
-		output_current_mA = output_current_raw * 0.81f / 1.40f;
+		output_current_mA = output_current_raw * 0.88f / 50 / 0.01;
 		HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&adc1_buffer[0], 8000);
 
 		int16_t current_error = output_current_mA - required_current_mA;
