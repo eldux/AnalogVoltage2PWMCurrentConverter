@@ -518,7 +518,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 			else if (offset > 50.0f) offset = 50.0f;
 		}
 		if (output_current_raw < 0) output_current_raw = 0;
-		output_current_mA = output_current_raw * 0.88f / 50 / 0.01;
+		output_current_mA = output_current_raw * 0.809f / 50 / 0.01;
 		HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&adc1_buffer[0], 8000);
 
 		int16_t current_error = output_current_mA - required_current_mA;
