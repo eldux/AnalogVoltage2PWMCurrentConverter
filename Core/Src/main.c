@@ -522,14 +522,14 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 		HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&adc1_buffer[0], 8000);
 
 		int16_t current_error = output_current_mA - required_current_mA;
-		float error_correction = ((float)current_error) / 10.0f;
-		if (error_correction > 10.0f)
+		float error_correction = ((float)current_error) / 5.0f;
+		if (error_correction > 240.0f)
 		{
-			error_correction = 10.0f;
+			error_correction = 240.0f;
 		}
-		else if (error_correction < -10.0f)
+		else if (error_correction < -240.0f)
 		{
-			error_correction = -10.0f;
+			error_correction = -240.0f;
 		}
 		if (error_correction > 1.0f)
 		{
